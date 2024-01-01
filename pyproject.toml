@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "reminder"
+version = "0.1.0"
+description = "Remind me because I forget too much."
+authors = ["Lee Briggs <leeb@dmzone.co.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+platformdirs = "^4.1.0"
+dateparser = "^1.2.0"
+
+[tool.poetry.scripts]
+reminder = "reminder.__main__:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
