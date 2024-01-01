@@ -61,7 +61,8 @@ class Reminder():
         start_months = today_months - int(math.ceil(past / 31))
         end_months = today_months + int(math.ceil(past / 31))
 
-        print(" ID |     Date    | Description")
+        print(util.line_break())
+        print("#ID |     Date    | Description")
         ##print("--------------------------------------------------------------------")
         print(util.line_break())
 
@@ -104,7 +105,11 @@ class Reminder():
                         year = int(evt_months / 12)
                         month = (evt_months % 12) + 1
                         key = f"{year:04d}{month:02d}00"
-                        result[key] = { 'date': (year, month), 'event': event, 'index': index }
+                        result[key] = { 
+                            'date': (year, month),
+                            'delta': int(evt_months - today_months),
+                            'event': event,
+                            'index': index }
                         #print(f" match {year}-{month:02d}    {event.text}")
 
                 else:
@@ -114,24 +119,40 @@ class Reminder():
                         maxday = calendar.monthrange(year, month)[1]
                         day = event.day if event.day <= maxday else maxday
                         key = f"{year:04d}{month:02d}{day:02d}"
-                        result[key] = { 'date': (year, month, day), 'event': event, 'index': index }
+                        result[key] = { 
+                            'date': (year, month, day),
+                            'delta': int(evt_months - today_months),
+                            'event': event, 
+                            'index': index }
                         #print(f" match {year}-{month:02d}-{day:02d} {event.text}")
                         
                 evt_months += event.interval
                 rep += 1
 
         for key, item in sorted(result.items()):
-            color = '\033[37m'
+            color = "\033[37m"
+            if item['delta'] > 0:
+                color = "\033[32m"
+            elif item['delta'] < 0:
+                color = "\033[90m"
+
             if len(item['date']) == 2:
                 date_str = date(item['date'][0], item['date'][1], 1).strftime('-- %b %Y')
-            else:
+            else:                
                 date_str = date(item['date'][0], item['date'][1], item['date'][2]).strftime('%d %b %Y')
-
+                if item['delta'] == 0:
+                    if item['date'][2] > today.day:
+                        color = "\033[32m"
+                    elif item['date'][2] < today.day:
+                        color = "\033[90m"
+                    
             print(color, f'{item["index"]:3d}', ' | ', date_str, ' | ', item['event'].text, sep='')
         
         print('\033[37m', end='')
 
 
+    def count_events(self):
+        return len(self.storage.events)
 
     def list_events(self):
         self.storage.list_events()

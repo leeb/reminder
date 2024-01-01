@@ -2,10 +2,12 @@ from datetime import date
 import dateparser
 import sqlite3
 import os
+import logging
 
 from .event import Event
 from . import util
 
+logger = logging.getLogger(__name__)
 
 
 class Storage():
@@ -22,6 +24,10 @@ class Storage():
         #self.con = sqlite3.connect(db_path)
         #self.create_db()
         # print(f"@Storage {data_dir} {sql_db}")
+
+    def remove_event(self, index):
+        del self.events[index]
+        logger.debug(f"Removing event {id}")
 
     def append_event(self, event:Event):
         self.events.append(event)

@@ -50,14 +50,14 @@ def main():
 
     subparsers = parser.add_subparsers(title=None, dest="command", help="", metavar="Event commands")
 
-    parser_list = subparsers.add_parser('summary', aliases=['motd'], help="Summary of immediate reminders")
-    parser_list.set_defaults(command="summary")
+    parser_list = subparsers.add_parser('summary', help="Summary of immediate reminders")
 
     parser_list = subparsers.add_parser('list', aliases=['ls'], help="List events")
     parser_list.set_defaults(command="list")
 
     parser_remove = subparsers.add_parser('remove', aliases=['rm'], help="Remove event")
     parser_remove.set_defaults(command="remove")
+    parser_remove.add_argument('id', type=int, help="event id")
 
     parser_create = subparsers.add_parser('create', aliases=['add'], help="Add new event")
     parser_create.set_defaults(command="create")
@@ -65,6 +65,8 @@ def main():
     parser_create.add_argument('--interval', '-i', type=valid_interval, help="repeat interval")
     parser_create.add_argument('--limit', '-l', type=int, help="repeat interval")
     parser_create.add_argument('description', nargs='?', help="description")
+
+    parser_list = subparsers.add_parser('help', help="Show help message")
 
     args = parser.parse_args()
 
@@ -81,11 +83,11 @@ def main():
     # reminder.read_config()
     # reminder.write_config()
 
-    if args.command == None:
-        parser.print_help()
-
-    elif args.command == 'summary':
+    if args.command == 'summary' or args.command == None:
         reminder.summary()
+
+    elif args.command == 'help':
+        parser.print_help()
 
     elif args.command == 'create':
 
@@ -141,6 +143,20 @@ def main():
             if confirm == 'N':
                 print("Cancelled.")
                 break
+
+    elif args.command == 'remove':
+        id = args.id
+        max_id = reminder.count_events()
+        if id <= 0:
+            print("Error: Out of range, [id] must be greater than 0")            
+            return
+        if id > max_id:
+            print(f"Error: Out of range, [id] must be less than or equal to {max_id}")
+            return
+
+        print(f"Removing id {id}")
+        reminder.storage.remove_event(id - 1)
+        reminder.storage.text_export()
 
 
     elif args.command == 'list':
