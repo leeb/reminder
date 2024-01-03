@@ -66,6 +66,8 @@ def main():
     parser_create.add_argument('--limit', '-l', type=int, help="repeat interval")
     parser_create.add_argument('description', nargs='?', help="description")
 
+    parser_edit = subparsers.add_parser('edit', help="Open event file with default editor.")
+
     parser_list = subparsers.add_parser('help', help="Show help message")
 
     args = parser.parse_args()
@@ -161,6 +163,9 @@ def main():
 
     elif args.command == 'list':
         reminder.list_events()
+
+    elif args.command == 'edit':
+        reminder.edit_events()
 
     #logger.debug("This is a debug messages")
 

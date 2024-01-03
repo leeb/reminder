@@ -40,6 +40,10 @@ class Reminder():
         self.storage = Storage(**self.config['storage'])
         self.storage.text_import()
 
+    def edit_events(self):
+        eventfile = os.path.join(self.config['storage']['data_dir'], self.config['storage']['event_file'])
+        os.system(f"xdg-open {eventfile}")
+
 
     def read_config(self):
         self.config.read(self.__config_path)
