@@ -1,6 +1,4 @@
 from datetime import date
-import dateparser
-import sqlite3
 import os
 import logging
 
@@ -11,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class Storage():
-    def __init__(self, data_dir=None, event_file="reminder.txt", db_file="reminder.db"):
+    def __init__(self, data_dir=None, event_file="reminder.txt", **kwargs):
         self.events = []
 
         if not os.path.exists(data_dir):
@@ -19,11 +17,6 @@ class Storage():
 
         self.event_file = os.path.join(data_dir, event_file)
 
-        # db_path = os.path.join(data_dir, db_file)
-        #print(f"creating db : {db_path}")
-        #self.con = sqlite3.connect(db_path)
-        #self.create_db()
-        # print(f"@Storage {data_dir} {sql_db}")
 
     def remove_event(self, index):
         del self.events[index]
@@ -39,18 +32,6 @@ class Storage():
         for index, event in enumerate(self.events):
             print(f"{index + 1: 3}| ", event, sep='')
             #print(f"{index:02d}", event)
-
-
-    def create_db(self):
-        self.con.execute("""CREATE TABLE IF NOT EXISTS events ( 
-            id INTEGER,
-            start_date INTEGER NOT NULL,
-            last_date INTEGER,
-            months INTEGER NOT NULL,
-            weeks INTEGER NOT NULL,
-            PRIMARY KEY(id)                 
-        );""")
-        self.con.commit()
 
 
     def text_export(self, filename=None):
