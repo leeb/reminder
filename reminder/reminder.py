@@ -130,6 +130,9 @@ class Reminder():
                             'index': index }
                         #print(f" match {year}-{month:02d}-{day:02d} {event.text}")
                         
+                if event.interval is None:
+                    break
+
                 evt_months += event.interval
                 rep += 1
 

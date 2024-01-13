@@ -136,13 +136,13 @@ def main():
         print("")
 
         while True:
-            confirm = input("Confirm (Y/n): ").strip().upper()
+            confirm = input("Confirm (Y/n): ").strip()
             if confirm == 'Y' or confirm == "":                                
                 print("Saved.")
                 reminder.storage.append_event(evt)
                 reminder.storage.text_export()
                 break
-            if confirm == 'N':
+            if confirm == 'n':
                 print("Cancelled.")
                 break
 

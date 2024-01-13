@@ -70,29 +70,38 @@ class Storage():
         if filename is None:
             filename = self.event_file
 
-        with open(filename, "r") as textfile:
-            for line in textfile:
-                if line.startswith('#'):
-                    continue
+        try:
+            with open(filename, "r") as textfile:
+                for line in textfile:
+                    if line.startswith('#'):
+                        continue
 
-                parts = line.strip().split('|')
-                if len(parts) < 4:
-                    continue
+                    parts = line.strip().split('|')
+                    if len(parts) < 4:
+                        continue
 
-                start_date = util.parse_start_date(parts[0])
-                interval = util.parse_interval(parts[1])
-                try:
-                    limit = int(parts[2])
-                except ValueError:
-                    limit = None
+                    start_date = util.parse_start_date(parts[0])
+                    interval = util.parse_interval(parts[1])
+                    try:
+                        limit = int(parts[2])
+                    except ValueError:
+                        limit = None
 
-                text = parts[3].strip()
-                #print(start_date, interval, limit, text)
+                    text = parts[3].strip()
+                    #print(start_date, interval, limit, text)
 
-                self.events.append(Event(text, 
-                        year=start_date[0], month=start_date[1], day=start_date[2],
-                        interval=interval, limit=limit))
+                    self.events.append(Event(text, 
+                            year=start_date[0], month=start_date[1], day=start_date[2],
+                            interval=interval, limit=limit))
 
+        except FileNotFoundError:
+            # create a default reminder event
+            today = date.today()
+            event = Event("Create your first reminder",
+                          year=today.year, month=today.month, day=today.day)
+            
+            self.append_event(event)
+            self.text_export()
 
 
 
